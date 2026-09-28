@@ -34,6 +34,7 @@ print()
 
 # For your information this part is coded in pair with AI that would explain the use of more advanced techniques like a dictionary and the try/except function.
 # But I still typed everything myself to make sure i understand the code and slightly memorise it.
+
 # Creation of the function "charge_donnees"
 def charge_donnees(name_of_file):
 
@@ -71,7 +72,7 @@ Trees = charge_donnees("MasterclassData_2012_all")
 
 # Both the first part of my code that i coded alone and the part coded with AI do basicaly the same thing. The only exception is that the AI part can be applied to any root file.
 
-# Creation of the function 'dessine_branche' that takes a DataFrame and a branch name and saves a histogram of it.
+                                        # Creation of the function 'dessine_branche' that takes a DataFrame and a branch name and saves a histogram of it.
 
 def dessine_branche(df, branch_name):
 
@@ -98,9 +99,16 @@ def dessine_branche(df, branch_name):
         # Error if wrong branch name
         print(f"Branch '{branch_name}' not found.")
 
+
 # Testing the 'dessine_branche' function
-df_decay = Trees.get("DecayTree;1")
-# checking if the data frmae exists
+
+df_decay = Trees.get("DecayTree;2") # DecayTree 2 is more up to date so we will be using this one
+
+# Checking what branches are in the TTree
+print(df_decay.columns) # This gives me the info that i can make all of the histograms by using this as the name of the differents branches
+
+# # checking if the data frame exists and making the histograms
 if df_decay is not None:
-    dessine_branche(df_decay, "D0_MM")
+    for branch in df_decay.columns:
+        dessine_branche(df_decay, branch)
 
