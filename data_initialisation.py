@@ -1,6 +1,5 @@
 import uproot as ur
 import pandas as pd
-import zfit as zf
 # I decided to use plotly because of how easy it is to interact with the plots and read them. I used it previously for an internship
 import plotly.express as px
 import os
@@ -132,6 +131,17 @@ if df_decay is not None:
     for branch in df_decay.columns:
         dessine_branche(df_decay, branch, **settings.get(branch, {}))
 
+
+Prob1 = df_decay[(df_decay["Kplus_ProbNNk"] > 0.9) & (df_decay["piminus_ProbNNpi"] > 0.9)]
+Prob2 = df_decay[(df_decay["Kplus_ProbNNpi"] < 0.001) & (df_decay["piminus_ProbNNk"] < 0.001)]  
+
+
+dessine_branche(Prob1, "Kplus_ProbNNk", log_y=True)
+dessine_branche(Prob1, "piminus_ProbNNpi", log_y=True)
+dessine_branche(Prob2, "Kplus_ProbNNpi", log_y=True)
+dessine_branche(Prob2, "piminus_ProbNNk", log_y=True)
+
+
 # 3.1 Preambule
 
 # We can see that the Measured Mass of the D0 is contained in the branch D0_MM
@@ -140,7 +150,10 @@ if df_decay is not None:
 # the probability of a kaon candidate being identified as pion or a kaon is stored in the branches Kplus_ProbNNpi and Kplus_ProbNNk
 # the probability of a pion candidate being identified as pion or a kaon is stored in the branches piminus_ProbNNpi and piminus_ProbNNk
 
+# 3.2 Selection
 
+# The easiest data from which we can 'extract' the signal by a simple selection with as little noise as possible is the probability histograms of the kaons and the pions
+# 
 
 
 
