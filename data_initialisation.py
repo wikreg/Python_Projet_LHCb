@@ -61,7 +61,7 @@ def charge_donnees(name_of_file):
         print(f"\n--- Data for {tree_name} ---")
         print(df.head())
         print()
-    
+
     return trees
 
 # Testing the 'charge_donnees' function with the given data set for the project
