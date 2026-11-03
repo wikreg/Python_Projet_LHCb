@@ -2,6 +2,7 @@ import uproot as ur
 import pandas as pd
 # I decided to use plotly because of how easy it is to interact with the plots and read them. I used it previously for an internship
 import plotly.express as px
+import plotly.graph_objects as go
 import os
 from plotly.subplots import make_subplots as msp
 
@@ -56,9 +57,9 @@ def charge_donnees(name_of_file):
 
     # print to see what the data looks like
     # Here i asked AI to help me make it more aestheticaly pleasing
-    for tree_name, df in trees.items():
+    for tree_name, dfs in trees.items():
         print(f"\n--- Data for {tree_name} ---")
-        print(df.head())
+        print(dfs.head())
         print()
 
     return trees
@@ -73,12 +74,12 @@ Trees = charge_donnees("MasterclassData_2012_all")
 
 # Creation of the function 'dessine_branche' that takes a DataFrame and a branch name and saves a histogram of it.
 
-def dessine_branche(df, branch_name, nbins=5000, x_range=None, log_y=False, log_x=False):
+def dessine_branche_3_1(dfs, branch_name, nbins=5000, x_range=None, log_y=True, log_x=False):
 
     # Checking if the branch name is in the data frame and saving a histogram of it
-    if branch_name in df.columns:
+    if branch_name in dfs.columns:
         # Creating a histogram using plotly express
-        fig = px.histogram(df, 
+        fig = px.histogram(dfs, 
                            x=branch_name,
                            nbins=nbins,
                            range_x=x_range,
@@ -101,6 +102,9 @@ def dessine_branche(df, branch_name, nbins=5000, x_range=None, log_y=False, log_
     else:
         # Error if wrong branch name
         print(f"Branch '{branch_name}' not found.")
+
+
+
 
 # Testing the 'dessine_branche' function
 
@@ -129,18 +133,20 @@ settings = {
 # # checking if the data frame exists and making the histograms
 if df_decay is not None:
     for branch in df_decay.columns:
-        dessine_branche(df_decay, branch, **settings.get(branch, {}))
+        dessine_branche_3_1(df_decay, branch, **settings.get(branch, {}))
 
+# Defining the interesting parts of the histogram to "filter" out the noise
 
-Prob1 = df_decay[(df_decay["Kplus_ProbNNk"] > 0.9) & (df_decay["piminus_ProbNNpi"] > 0.9)]
-Prob2 = df_decay[(df_decay["Kplus_ProbNNpi"] < 0.001) & (df_decay["piminus_ProbNNk"] < 0.001)]  
+# Prob1 = df_decay[(df_decay["Kplus_ProbNNk"] > 0.9) & (df_decay["piminus_ProbNNpi"] > 0.9)]
+# Prob2 = df_decay[(df_decay["Kplus_ProbNNpi"] < 0.006) & (df_decay["piminus_ProbNNk"] < 0.002)]  
 
+# # Checking if the selection worked by saving their histograms
+# # We can see a clear difference, as the interesting parts of the graphs are "zoomed" in
 
-dessine_branche(Prob1, "Kplus_ProbNNk", log_y=True)
-dessine_branche(Prob1, "piminus_ProbNNpi", log_y=True)
-dessine_branche(Prob2, "Kplus_ProbNNpi", log_y=True)
-dessine_branche(Prob2, "piminus_ProbNNk", log_y=True)
-
+# dessine_branche_3_1(Prob1, "Kplus_ProbNNk")
+# dessine_branche_3_1(Prob1, "piminus_ProbNNpi")
+# dessine_branche_3_1(Prob2, "Kplus_ProbNNpi")
+# dessine_branche_3_1(Prob2, "piminus_ProbNNk")
 
 # 3.1 Preambule
 
@@ -152,44 +158,10 @@ dessine_branche(Prob2, "piminus_ProbNNk", log_y=True)
 
 # 3.2 Selection
 
-# The easiest data from which we can 'extract' the signal by a simple selection with as little noise as possible is the probability histograms of the kaons and the pions
-# 
+# The easiest data from which we can 'extract' the signal by a simple selection with as little noise as possible is the probability histograms of the kaons and the pions because of the probability peaks that are easy to spot.
+# I think the best easy way to seperate the data with the noise and the important data is to check the full histograms and find a value on the Y axis where i will 'cut' the histogram.
 
 
-
-# # This is not useful for me cuz the graphes are all different and I need to make them pretty one by one so this is pointless but im goint to leave it in just in case
-
-# def dessine_toutes_branches(df):
-
-#     output_file = "histograms_plots/all_histograms.html"
-
-#     branches = df.columns
-
-#     n = len(branches) # the number of histograms
-#     cols = 2 # the number of columns i want the histograms displayed in
-#     rows = (n + cols - 1) // cols # Calculating how many rows are needed for the displayed histograms
-
-#     fig = msp(rows = rows, cols = cols, subplot_titles = branches)
-
-#     for i, branch in enumerate(branches):
-
-#         row = i // cols + 1
-#         col = i % cols + 1
-
-#         fig.add_histogram(x = df[branch], name = branch, row = row, col = col)
-        
-        
-#     fig.update_layout(title_text = "Histograms of all branches", template = "plotly_dark", height = 250 * rows, width = 1000)
-#     fig.write_html(output_file)
-
-
-
-# df_decay = Trees.get("DecayTree;2")
-
-# print(df_decay.columns)
-
-# if df_decay is not None:
-#     dessine_toutes_branches(df_decay)
 
 
 
